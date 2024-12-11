@@ -1,0 +1,93 @@
+<!-- app/views/cart.erb -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carrito de Compras</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Estilos personalizados opcionales */
+    .table-img {
+      width: 100px;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container mt-4">
+    <h2 class="text-center my-4">Tu Carrito de Compras</h2>
+    
+    <% if @cart_items.empty? %>
+      <div class="alert alert-info text-center" role="alert">
+        No tienes vehículos en tu carrito.
+      </div>
+      <div class="text-center">
+        <a href="/vehicles" class="btn btn-primary">Explorar Vehículos</a>
+      </div>
+    <% else %>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Imagen</th>
+              <th scope="col">Marca</th>
+              <th scope="col">Modelo</th>
+              <th scope="col">Año</th>
+              <th scope="col">Precio</th>
+              <th scope="col">Cantidad</th>
+              <th scope="col">Total</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @cart_items.each do |vehicle| %>
+              <tr>
+                <td>
+                  <img src="<%= vehicle.image_url || 'https://via.placeholder.com/100x100' %>" alt="<%= vehicle.model %>" class="img-fluid table-img">
+                </td>
+                <td><%= vehicle.brand %></td>
+                <td><%= vehicle.model %></td>
+                <td><%= vehicle.year %></td>
+                <td>$<%= vehicle.price %></td>
+                <td><%= @cart[vehicle.id.to_s] %></td>
+                <td>$<%= (@cart[vehicle.id.to_s].to_i * vehicle.price.to_f).round(2) %></td>
+                <td>
+                  <form action="/cart/remove" method="POST" class="d-inline">
+                    <input type="hidden" name="vehicle_id" value="<%= vehicle.id %>">
+                    <button type="submit" class="btn btn-danger btn-sm">Remover</button>
+                  </form>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="row mt-4">
+        <div class="col-md-6 offset-md-6">
+          <h4 class="text-right">Total: $<%= @total.round(2) %></h4>
+          <div class="d-flex justify-content-between">
+            <form action="/cart/clear" method="POST">
+              <button type="submit" class="btn btn-warning">Vaciar Carrito</button>
+            </form>
+            <!-- Botón de proceder al pago -->
+            <a href="/login" class="btn btn-success">Proceder al Pago</a>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    
+  </div>
+
+  <footer class="container mt-5">
+    <p class="text-center">© 2024 Proyecto</p>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

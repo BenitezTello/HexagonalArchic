@@ -1,0 +1,53 @@
+<!-- app/views/dashboard.erb -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard - ABT Zone</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container mt-4">
+    <h3>Vehículos Disponibles</h3>
+  
+    <div class="row">
+      <% @vehicles.each do |vehicle| %>
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+          <div class="card">
+            <img src="<%= vehicle.image_url || 'https://via.placeholder.com/150' %>" class="card-img-top" alt="Vehículo">
+            <div class="card-body">
+              <h5 class="card-title"><%= vehicle.brand %> <%= vehicle.model %></h5>
+              <p class="card-text">Año: <%= vehicle.year %></p>
+              <p class="card-text">Precio: $<%= vehicle.price %></p>
+              <a href="/vehicles/<%= vehicle.id %>" class="btn btn-info">Ver más</a>
+              
+              <!-- Mostrar "Agregar al Carrito" solo si el usuario NO es administrador -->
+              <% unless current_user && current_user.admin? %>
+                <form action="/cart/add" method="POST" style="display:inline;">
+                  <input type="hidden" name="vehicle_id" value="<%= vehicle.id %>">
+                  <button type="submit" class="btn btn-success">Agregar al Carrito</button>
+                </form>
+              <% end %>
+              
+              <% if current_user && current_user.admin? %>
+                <a href="/vehicles/<%= vehicle.id %>/edit" class="btn btn-warning">Editar</a>
+                <a href="/vehicles/<%= vehicle.id %>/delete" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que quieres eliminar este vehículo?')">Eliminar</a>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2024 ABT Zone</p>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

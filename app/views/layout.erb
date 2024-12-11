@@ -1,0 +1,117 @@
+<!-- app/views/layout.erb -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ABT Zone</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Font Awesome CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <!-- Estilos Personalizados -->
+  <style>
+    body {
+      background: #f8f9fa; /* Color de fondo suave */
+    }
+    .form-container {
+      margin-top: 50px;
+    }
+    .form-card {
+      padding: 30px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .form-card .form-group {
+      position: relative;
+    }
+    .form-card .form-group .fa {
+      position: absolute;
+      top: 50%;
+      left: 15px;
+      transform: translateY(-50%);
+      color: #6c757d;
+    }
+    .form-card input {
+      padding-left: 40px; /* Espacio para el icono */
+    }
+    .form-card button {
+      width: 100%;
+    }
+    /* Responsive */
+    @media (max-width: 576px) {
+      .form-card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra de navegación -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">ABT Zone</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" 
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+
+        <% if session[:user_id] %>
+          <% if current_user.admin? %>
+            <li class="nav-item"><a class="nav-link" href="/vehicles/new">Agregar Vehículo</a></li>
+          <% end %>
+
+          <% unless current_user.admin? %>
+            <li class="nav-item">
+              <a class="nav-link" href="/cart">
+                Carrito
+                <% if cart.any? %>
+                  <span class="badge badge-pill badge-primary"><%= cart.values.sum %></span>
+                <% end %>
+              </a>
+            </li>
+            <!-- Enlace "Ver Vehículos" visible para todos -->
+            <li class="nav-item">
+              <a class="nav-link" href="/vehicles">Ver Vehículos</a>
+            </li>
+          <% end %>
+
+          <li class="nav-item"><a class="nav-link" href="/logout">Cerrar sesión</a></li>
+        <% else %>
+          <li class="nav-item"><a class="nav-link" href="/login">Iniciar sesión</a></li>
+          <li class="nav-item"><a class="nav-link" href="/register">Registrarse</a></li>
+        <% end %>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Mensajes Flash (si usas sinatra-flash) -->
+  <div class="container mt-4">
+    <% if flash[:success] %>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= flash[:success] %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    <% end %>
+    <% if flash[:error] %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= flash[:error] %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    <% end %>
+    <%= yield %> <!-- Aquí se renderizan las vistas -->
+  </div>
+
+  <!-- Bootstrap JS y dependencias -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

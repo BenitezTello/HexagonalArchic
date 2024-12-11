@@ -1,0 +1,17 @@
+<h2 class="text-center my-4">Vehículos Disponibles</h2>
+
+<div class="row">
+  <% @vehicles.each do |vehicle| %>
+    <div class="col-12 col-sm-6 col-md-4 mb-4">
+      <div class="card">
+        <img src="https://via.placeholder.com/150" class="card-img-top" alt="Vehículo">
+        <div class="card-body">
+          <h5 class="card-title"><%= vehicle.brand %> <%= vehicle.model %></h5>
+          <p class="card-text">Año: <%= vehicle.year %></p>
+          <p class="card-text">Precio: $<%= vehicle.price %></p>
+          <a href="/vehicles/<%= vehicle.id %>" class="btn btn-info">Ver más</a>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
